@@ -3,3 +3,8 @@
 ################################################################################
 
 *.suo
+/.vs
+/Wibble.DependencyInjection.KeyedServices/bin
+/Wibble.DependencyInjection.KeyedServices/obj
+/Wibble.DependencyInjection.KeyedServices.UnitTests/bin/Debug/netcoreapp2.1
+/Wibble.DependencyInjection.KeyedServices.UnitTests/obj
