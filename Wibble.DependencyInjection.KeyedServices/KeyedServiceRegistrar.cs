@@ -45,6 +45,16 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="key">The key.</param>
         public void Add(Type interfaceType, Type instanceType, object key)
         {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException(nameof(instanceType));
+            }
+
             var locator = _registrations.GetOrAdd(interfaceType, t => new TypeRegistrar());
             locator.Add(key, instanceType);
         }
@@ -57,6 +67,11 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <returns>The <see cref="Type"/> that implements <see cref="interfaceType"/></returns>
         public Type LookUp(Type interfaceType, object key)
         {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
             if (_registrations.TryGetValue(interfaceType, out var locator))
             {
                 return locator.Lookup(key);

@@ -32,6 +32,21 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="registrar">The registrar</param>
         /// <param name="key">The key.</param>
         [PublicAPI]
+        public static void AddScoped<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
+            where TService : class, TInterface
+        {
+            registrar.Services.AddScoped<TService>();
+            registrar.Add<TInterface, TService>(key);
+        }
+
+        /// <summary>
+        /// Adds the specified mapping of a service using the key <paramref name="key"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="registrar">The registrar</param>
+        /// <param name="key">The key.</param>
+        [PublicAPI]
         public static void AddTransient<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
             where TService : class, TInterface
         {
@@ -53,6 +68,23 @@ namespace Wibble.DependencyInjection.KeyedServices
             where TService : class, TInterface
         {
             registrar.Services.AddSingleton(implementationFactory);
+            registrar.Add<TInterface, TService>(key);
+        }
+
+        /// <summary>
+        /// Adds the specified mapping of a service using the key <paramref name="key"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="registrar">The registrar</param>
+        /// <param name="key">The key.</param>
+        /// <param name="implementationFactory">The implementation factory</param>
+        /// <param name="singleInstance">True if the service is a singe instance, otherwise false</param>
+        [PublicAPI]
+        public static void AddScoped<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key, Func<IServiceProvider, TService> implementationFactory, bool singleInstance = false)
+            where TService : class, TInterface
+        {
+            registrar.Services.AddScoped(implementationFactory);
             registrar.Add<TInterface, TService>(key);
         }
 

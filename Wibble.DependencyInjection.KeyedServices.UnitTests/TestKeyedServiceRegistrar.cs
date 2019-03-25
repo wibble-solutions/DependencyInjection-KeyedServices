@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Wibble.DependencyInjection.KeyedServices.UnitTests
@@ -9,6 +10,100 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
     [TestFixture]
     public class TestKeyedServiceRegistrar
     {
+        [Test]
+        public void Services_Null()
+        {
+            // Arrange
+            // Act
+            // ReSharper disable once ObjectCreationAsStatement
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var ex = Assert.Throws<ArgumentNullException>(() => new KeyedServiceRegistrar(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("services"));
+        }
+
+        [Test]
+        public void RegistersTypes()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+
+            var keyedSvcRegistrar = new KeyedServiceRegistrar(serviceCollection);
+            var services = serviceCollection.BuildServiceProvider();
+
+            // Act
+            var registrar = services.GetService<IKeyedServiceRegistrar>();
+            var register = services.GetService<IKeyedServiceRegister>();
+            var factory = services.GetService<IKeyedServiceFactory>();
+
+            // Assert
+            Assert.That(registrar, Is.SameAs(keyedSvcRegistrar));
+            Assert.That(register, Is.SameAs(keyedSvcRegistrar));
+            Assert.That(factory, Is.InstanceOf<KeyedServiceFactory>());
+        }
+
+        [Test]
+        public void Services()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+
+            // Act
+            var keyedSvcRegistrar = new KeyedServiceRegistrar(serviceCollection);
+            var actualServices = keyedSvcRegistrar.Services;
+
+            // Assert
+            Assert.That(actualServices, Is.SameAs(serviceCollection));
+        }
+
+        [Test]
+        public void Add_InterfaceIsNull()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+            var registrar = new KeyedServiceRegistrar(serviceCollection);
+
+            // Act
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var ex = Assert.Throws<ArgumentNullException>(() => registrar.Add(null, typeof(MyService1), "KEY"));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("interfaceType"));
+        }
+
+        [Test]
+        public void Add_InstanceTypeIsNull()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+            var registrar = new KeyedServiceRegistrar(serviceCollection);
+
+            // Act
+            // ReSharper disable once ArgumentsStyleLiteral
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var ex = Assert.Throws<ArgumentNullException>(() => registrar.Add(typeof(IMyService), instanceType: null, key: "KEY"));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("instanceType"));
+        }
+
+        [Test]
+        public void LookUp_InterfaceTypeIsNull()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+            var registrar = new KeyedServiceRegistrar(serviceCollection);
+
+            // Act
+            // ReSharper disable once MustUseReturnValue
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var ex = Assert.Throws<ArgumentNullException>(() => registrar.LookUp(null, key: "KEY"));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("interfaceType"));
+        }
+
         [Test]
         public void AddServices_ByName()
         {
@@ -22,9 +117,9 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
             var services = serviceCollection.BuildServiceProvider();
 
             // Act
-            //// var factory = services.GetService<IKeyedServiceFactory>();
-            var service1 = services.GetService<IMyService>("SERVICE1");
-            var service2 = services.GetService<IMyService>("SERVICE2");
+            var factory = services.GetService<IKeyedServiceFactory>();
+            var service1 = factory.GetService<IMyService>("SERVICE1");
+            var service2 = factory.GetService<IMyService>("SERVICE2");
 
             // Assert
             Assert.That(service1, Is.InstanceOf<MyService1>());
@@ -53,22 +148,5 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
             Assert.That(service2, Is.InstanceOf<MyService2>());
         }
 
-    }
-
-    public enum AvailableServices {
-        Service1,
-        Service2,
-    }
-
-    public interface IMyService
-    {
-    }
-
-    public class MyService1 : IMyService
-    {
-    }
-
-    public class MyService2 : IMyService
-    {
     }
 }

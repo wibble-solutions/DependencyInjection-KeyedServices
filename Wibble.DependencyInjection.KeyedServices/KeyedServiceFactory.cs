@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 
 namespace Wibble.DependencyInjection.KeyedServices
 {
@@ -15,7 +16,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <param name="registrar">The registrar.</param>
         /// <param name="services">The services.</param>
-        public KeyedServiceFactory(IKeyedServiceRegister registrar, IServiceProvider services)
+        public KeyedServiceFactory([NotNull]IKeyedServiceRegister registrar, [NotNull]IServiceProvider services)
         {
             _registrar = registrar ?? throw new ArgumentNullException(nameof(registrar));
             _services  = services  ?? throw new ArgumentNullException(nameof(services));
@@ -31,6 +32,24 @@ namespace Wibble.DependencyInjection.KeyedServices
         {
             Type t = _registrar.LookUp(interfaceType, key);
             return t == null ? null : _services.GetService(t);
+        }
+
+        /// <summary>
+        /// Gets the instance of a service based upon a key.
+        /// </summary>
+        /// <param name="interfaceType">The interface type</param>
+        /// <param name="key">The key.</param>
+        /// <returns>The instance of the service, or null if the key is not registered</returns>
+        public object GetRequiredService(Type interfaceType, object key)
+        {
+            object retVal = GetService(interfaceType, key);
+            if (retVal == null)
+            {
+                throw new InvalidOperationException($"Service '{key}' of type {interfaceType.Name} is not registered");
+            }
+
+            return retVal;
+
         }
     }
 }
