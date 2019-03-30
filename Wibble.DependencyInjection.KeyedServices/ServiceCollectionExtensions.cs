@@ -5,23 +5,32 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Wibble.DependencyInjection.KeyedServices
 {
     /// <summary>
-    /// Extensions for the <see cref="IKeyedServiceRegistrar"/> interface 
+    /// Extensions for the <see cref="IServiceCollection"/> interface
     /// </summary>
-    public static class KeyedServiceRegistrarExtensions
+    public static class ServiceCollectionExtensions
     {
         /// <summary>
+        /// Gets or sets the registrar.
+        /// </summary>
+        /// <value>
+        /// The registrar.
+        /// </value>
+        public static IKeyedServiceRegistrar Registrar
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// Adds the specified mapping of a service using the key <paramref name="key"/>.
         /// </summary>
-        /// <typeparam name="TInterface">The type of the interface.</typeparam>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
+        /// <param name="interfaceType">The type of the interface.</param>
+        /// <param name="instanceType">The type of the service.</param>
         /// <param name="key">The key.</param>
         [PublicAPI]
-        public static void AddSingleton<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
-            where TService : class, TInterface
+        public static void Add([NotNull]this IServiceCollection services, [NotNull] Type interfaceType, [NotNull] Type instanceType, [CanBeNull] object key)
         {
-            registrar.Services.AddSingleton<TService>();
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).Add(interfaceType, instanceType, key);
         }
 
         /// <summary>
@@ -29,14 +38,13 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         [PublicAPI]
-        public static void AddTransient<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
+        public static void AddSingleton<TInterface, TService>([NotNull]this IServiceCollection services, object key)
             where TService : class, TInterface
         {
-            registrar.Services.AddTransient<TService>();
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).AddSingleton<TInterface, TService>(key);
         }
 
         /// <summary>
@@ -44,14 +52,13 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         [PublicAPI]
-        public static void AddScoped<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
+        public static void AddTransient<TInterface, TService>([NotNull]this IServiceCollection services, object key)
             where TService : class, TInterface
         {
-            registrar.Services.AddScoped<TService>();
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).AddTransient<TInterface, TService>(key);
         }
 
         /// <summary>
@@ -59,15 +66,28 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
+        /// <param name="key">The key.</param>
+        [PublicAPI]
+        public static void AddScoped<TInterface, TService>([NotNull]this IServiceCollection services, object key)
+            where TService : class, TInterface
+        {
+            GetRegistrar(services).AddScoped<TInterface, TService>(key);
+        }
+
+        /// <summary>
+        /// Adds the specified mapping of a service using the key <paramref name="key"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
-        public static void AddSingleton<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key, Func<IServiceProvider, TService> implementationFactory)
+        public static void AddSingleton<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
             where TService : class, TInterface
         {
-            registrar.Services.AddSingleton(implementationFactory);
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).AddSingleton<TInterface, TService>(key, implementationFactory);
         }
 
         /// <summary>
@@ -75,15 +95,14 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
-        public static void AddTransient<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key, Func<IServiceProvider, TService> implementationFactory)
+        public static void AddTransient<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
             where TService : class, TInterface
         {
-            registrar.Services.AddTransient(implementationFactory);
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).AddTransient<TInterface, TService>(key, implementationFactory);
         }
 
         /// <summary>
@@ -91,15 +110,14 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
-        public static void AddScoped<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key, Func<IServiceProvider, TService> implementationFactory)
+        public static void AddScoped<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
             where TService : class, TInterface
         {
-            registrar.Services.AddScoped(implementationFactory);
-            registrar.Add<TInterface, TService>(key);
+            GetRegistrar(services).AddScoped<TInterface, TService>(key, implementationFactory);
         }
 
         /// <summary>
@@ -107,27 +125,24 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <param name="registrar">The registrar</param>
+        /// <param name="services">The services</param>
         /// <param name="key">The key.</param>
         [PublicAPI]
-        public static void Add<TInterface, TService>([NotNull]this IKeyedServiceRegistrar registrar, object key)
+        public static void Add<TInterface, TService>([NotNull]this IServiceCollection services, object key)
             where TService : class, TInterface
         {
-            registrar.Add(typeof(TInterface), typeof(TService), key);
+            GetRegistrar(services).Add<TInterface, TService>(key);
         }
 
         /// <summary>
-        /// Looks up a service via its key
+        /// Gets the registrar for the specified service container.
         /// </summary>
-        /// <typeparam name="TInterface">The type of the interface.</typeparam>
-        /// <param name="register">The register</param>
-        /// <param name="key">The key.</param>
-        /// <returns>The <see cref="Type"/> that implements <see cref="TInterface"/></returns>
-        [PublicAPI]
-        [MustUseReturnValue]
-        public static Type LookUp<TInterface>([NotNull]this IKeyedServiceRegister register, object key)
+        /// <remarks>This is a singleton container, set up when this method is first called</remarks>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <returns>The keyed service registrar</returns>
+        private static IKeyedServiceRegistrar GetRegistrar(IServiceCollection serviceCollection)
         {
-            return register.LookUp(typeof(TInterface), key);
+            return Registrar ?? (Registrar = new KeyedServiceRegistrar(serviceCollection));
         }
     }
 }

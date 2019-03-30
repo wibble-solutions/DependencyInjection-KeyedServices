@@ -6,6 +6,7 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
     /// Tests the <see cref="ServiceProviderExtensions"/> class
     /// </summary>
     [TestFixture]
+    [Ignore("TODO: Write this")]
     public class TestServiceProviderExtensions
     {
         [Test]

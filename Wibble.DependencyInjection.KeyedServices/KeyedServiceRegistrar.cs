@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -78,6 +80,90 @@ namespace Wibble.DependencyInjection.KeyedServices
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Looks up all of the types that implement a keyed service
+        /// </summary>
+        /// <param name="interfaceType">The interface type</param>
+        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public IEnumerable<Type> LookUp(Type interfaceType)
+        {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
+            if (_registrations.TryGetValue(interfaceType, out var t))
+            {
+                return t.GetTypes();
+            }
+
+            return Enumerable.Empty<Type>();
+        }
+
+        /// <summary>
+        /// Looks up all of the keys related with a keyed service
+        /// </summary>
+        /// <param name="interfaceType">The interface type</param>
+        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public IEnumerable<object> GetKeys(Type interfaceType)
+        {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
+            if (_registrations.TryGetValue(interfaceType, out var t))
+            {
+                return t.GetKeys();
+            }
+
+            return Enumerable.Empty<object>();
+        }
+
+        /// <summary>
+        /// Determines whether the supplied keyed service exists
+        /// </summary>
+        /// <param name="interfaceType">The interface type</param>
+        /// <param name="key">The key</param>
+        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public bool Contains(Type interfaceType, object key)
+        {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
+            if (_registrations.TryGetValue(interfaceType, out var t))
+            {
+                return t.ContainsKey(key);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the supplied keyed service exists
+        /// </summary>
+        /// <param name="interfaceType">The interface type</param>
+        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public bool Contains(Type interfaceType)
+        {
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+
+            return _registrations.ContainsKey(interfaceType);
         }
     }
 }

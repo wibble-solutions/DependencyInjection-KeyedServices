@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace Wibble.DependencyInjection.KeyedServices
@@ -33,6 +35,38 @@ namespace Wibble.DependencyInjection.KeyedServices
             public Type Lookup(object key)
             {
                 return !_types.TryGetValue(key, out var type) ? default(Type) : type;
+            }
+
+            /// <summary>
+            /// Determines whether the specified key exists.
+            /// </summary>
+            /// <param name="key">The key.</param>
+            /// <returns>
+            ///   <c>true</c> if the specified key exists; otherwise, <c>false</c>.
+            /// </returns>
+            public bool ContainsKey(object key)
+            {
+                return _types.ContainsKey(key);
+            }
+
+            /// <summary>
+            /// Gets the keys.
+            /// </summary>
+            /// <returns>The keys</returns>
+            /// <exception cref="NotImplementedException"></exception>
+            public IEnumerable<Type> GetTypes()
+            {
+                return _types.Values.ToList();
+            }
+
+            /// <summary>
+            /// Gets the keys.
+            /// </summary>
+            /// <returns>The keys</returns>
+            /// <exception cref="NotImplementedException"></exception>
+            public IEnumerable<object> GetKeys()
+            {
+                return _types.Keys.ToList();
             }
         }
     }

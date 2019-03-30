@@ -7,10 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wibble.DependencyInjection.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{100DC6AE-FE48-431B-AFC4-40D633B3A926}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		Wibble.DependencyInjection.KeyedServices.sln.DotSettings = Wibble.DependencyInjection.KeyedServices.sln.DotSettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wibble.DependencyInjection.KeyedServices.UnitTests", "Wibble.DependencyInjection.KeyedServices.UnitTests\Wibble.DependencyInjection.KeyedServices.UnitTests.csproj", "{C4847E0C-87C0-4112-862E-6258B9421994}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wibble.DependencyInjection.KeyedServices.UnitTests", "Wibble.DependencyInjection.KeyedServices.UnitTests\Wibble.DependencyInjection.KeyedServices.UnitTests.csproj", "{C4847E0C-87C0-4112-862E-6258B9421994}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
