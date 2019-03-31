@@ -87,7 +87,7 @@ You can query information about keyed services by getting and using the ```IKeye
 Type t1 = register.LookUp(typeof(MyInterface), "MY_KEY");
 Type t2 = register.LookUp<MyInterface>("MY_KEY");
 
-IEnumerable<Type> t1 = register.LookUp(typeof(MyInterface));
+IEnumerable<Type> t3 = register.LookUp(typeof(MyInterface));
 IEnumerable<Type> t4 = register.LookUp<MyInterface>();
 
 IEnumerable<object> keys1 = register.GetKeys(typeof(MyInterface));
@@ -104,7 +104,7 @@ bool isAvailable4 = register.Contains<MyInterface>();
 #### Injecting Keyed Services
 
 ##### Injecting a particular keyed service into a constructor
-You can a particular keyed service into a class using a delegate during registration:
+You can get a particular keyed service into a class using a delegate during registration:
 
 ``` csharp
  serviceCollection.AddSingleton<MyInterface, MyClass>(s => new MyClass(s.GetService<IDependency>("KEY"))
