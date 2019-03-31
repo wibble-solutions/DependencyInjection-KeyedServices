@@ -3,17 +3,31 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
     <Authors>Paul Wardle</Authors>
-    <Company>Wibble Solutrions Limited</Company>
+    <Company>Wibble Solutions Limited</Company>
     <Description>This assembly adds simple support for keyed services to an IServiceProvider. This is primarily intended to add support for keyed services to Microsoft.Extensions.DependencyInjection.Abstractions.</Description>
     <Copyright>© Wibble Solutions Limited 2019</Copyright>
     <Tags>named keyed services IServiceProvider DI IOC dependency injection Microsoft.Extensions.DependencyInjection.Abstractions</Tags>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha-4</VersionSuffix>
+    <VersionSuffix>alpha-5</VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/wibble-solutions/DependencyInjection-KeyedServices</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wibble-solutions/DependencyInjection-KeyedServices.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>C:\Users\Paul\Source\Repos\wibble-solutions\DependencyInjection-KeyedServices\Wibble.DependencyInjection.KeyedServices\Wibble.DependencyInjection.KeyedServices.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\README.md">
+      <Pack>true</Pack>
+      <PackagePath>README.md</PackagePath>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

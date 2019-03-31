@@ -8,3 +8,5 @@
 /Wibble.DependencyInjection.KeyedServices/obj
 /Wibble.DependencyInjection.KeyedServices.UnitTests/bin/Debug/netcoreapp2.1
 /Wibble.DependencyInjection.KeyedServices.UnitTests/obj
+/Wibble.DependencyInjection.KeyedServices.UnitTests/bin/Release/netcoreapp2.1
+*.xml
