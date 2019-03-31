@@ -42,6 +42,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="key">The key.</param>
         [PublicAPI]
         public static void AddSingleton<TInterface, TService>([NotNull]this IServiceCollection services, object key)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddSingleton<TInterface, TService>(key);
@@ -56,6 +57,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="key">The key.</param>
         [PublicAPI]
         public static void AddTransient<TInterface, TService>([NotNull]this IServiceCollection services, object key)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddTransient<TInterface, TService>(key);
@@ -70,6 +72,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="key">The key.</param>
         [PublicAPI]
         public static void AddScoped<TInterface, TService>([NotNull]this IServiceCollection services, object key)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddScoped<TInterface, TService>(key);
@@ -85,6 +88,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
         public static void AddSingleton<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddSingleton<TInterface, TService>(key, implementationFactory);
@@ -100,6 +104,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
         public static void AddTransient<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddTransient<TInterface, TService>(key, implementationFactory);
@@ -115,6 +120,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// <param name="implementationFactory">The implementation factory</param>
         [PublicAPI]
         public static void AddScoped<TInterface, TService>([NotNull]this IServiceCollection services, object key, Func<IServiceProvider, TService> implementationFactory)
+            where TInterface : class
             where TService : class, TInterface
         {
             GetRegistrar(services).AddScoped<TInterface, TService>(key, implementationFactory);

@@ -32,20 +32,20 @@ Once you have created the registrar, its ```IKeyedServiceRegistrar``` interface 
 registrar.Add(typeof(MyInterface), typeof(MyClass), key);
 ```
 
-The raw ```Add``` method adds the key mappings but does not register the type with the container itself. To do this, you must call ```AddSingleton```, ```AddTransient``` or ```AddScoped``` as shown below.
+This raw ```Add``` method adds the key mappings but does not register the type with the underlying container. You must do this yourself, or alternatively call ```AddSingleton```, ```AddTransient``` or ```AddScoped``` as shown below.
 
-Keyed services can be added via the ```IKeyedServiceRegistrar``` until the ```IServiceProvider``` is created by calling ```CreateServiceProvider```.
+Keyed services can be added via the ```KeyedServiceRegistrar``` until the ```IServiceProvider``` is created by calling ```CreateServiceProvider``` on the underlying ```IServiceCollection```.
 
-If you have a ```IKeyedServiceRegistrar``` you can add your key mappings and the underlying type registrations these variants:
+If you have a ```IKeyedServiceRegistrar``` you can add your key mappings and the underlying type registrations using these variants:
 
 ``` csharp
  registrar.AddSingleton<MyInterface, MyClass1>("MY_KEY_1");
  registrar.AddTransient<MyInterface, MyClass2>("MY_KEY_2");
  registrar.AddScoped<MyInterface, MyClass3>("MY_KEY_3");
 
- registrar.AddSingleton<MyInterface, MyClass4>("MY_KEY_4", () => { /* Factory delegate */ });
- registrar.AddTransient<MyInterface, MyClass5>("MY_KEY_5", () => { /* Factory delegate */ });
- registrar.AddScoped<MyInterface, MyClass6>("MY_KEY_6", () => { /* Factory delegate */ });
+ registrar.AddSingleton<MyInterface, MyClass4>("MY_KEY_4", s => { /* Factory delegate */ });
+ registrar.AddTransient<MyInterface, MyClass5>("MY_KEY_5", s => { /* Factory delegate */ });
+ registrar.AddScoped<MyInterface, MyClass6>("MY_KEY_6", s => { /* Factory delegate */ });
 ```
 
 If you don't have a ```IKeyedServiceRegistrar```, and just have a ```IServiceCollection```,  you can use these extension methods which manage the ```IKeyedServiceRegistrar``` for you:
@@ -79,7 +79,7 @@ IEnumerable<MyInterface> services = serviceProvider.GetServices<MyInterface>();
 
 
 #### Querying Keyed Services
-You can query informtion about keyed services by getting and using the ```IKeyedServiceRegister``` interface. 
+You can query information about keyed services by getting and using the ```IKeyedServiceRegister``` interface. 
 
 ***Note:** ```KeyedServiceRegistrar``` implements ```IKeyedServiceRegister```.*
 
@@ -104,51 +104,42 @@ bool isAvailable4 = register.Contains<MyInterface>();
 #### Injecting Keyed Services
 
 ##### Injecting a particular keyed service into a constructor
-You can a particular keyed service into a class using a delegate:
+You can a particular keyed service into a class using a delegate during registration:
 
 ``` csharp
  serviceCollection.AddSingleton<MyInterface, MyClass>(s => new MyClass(s.GetService<IDependency>("KEY"))
 ```
 
-##### Injection of an Array of instances 
-You can inject keyed services as an array:
+##### Injection of an Enumerable of keyed services 
+You can inject all keyed services as an ```IEnumerable<T>```:
 
 ``` csharp
 internal class MyClass
 {
-	public MyClass(MyInterface[] types)
+	public MyClass(IEnumerable<MyInterface> types)
 	{
 	}
 }
 ```
 
-##### Injection of a Func Factory (by key)
-Get all instances via a Func:
+##### Injection of a Func Factory
+
+If you wish to get a create a keyed service via a Func, you must first register your Func factory:
 
 ``` csharp
-internal class MyClass
-{
-	private Func<MyInterface[]> _factory;
-
-	public MyClass(Func<MyInterface[]> factory)
-	{
-		_factory = factory; // _factory() creates all instance of the type
-	}
-}
+serviceCollection.AddSingleton<Func<object, MyInterface>>(s => s.GetService<MyInterface>);
 ```
 
-##### Injection of a Func Factory (all)
-
-Get a particular instance via a Func:
+and then you can inject this Func factory into your classes:
 
 ``` csharp
 internal class MyClass
 {
 	private Func<object, MyInterface> _factory;
 
-	public MyClass(Func<object, Interface> factory)
+	public MyClass(Func<object, MyInterface> factory)
 	{
-		_factory = factory; // _factory(key) creates an instance of the type
+		_factory = factory; // _factory(key) creates an instance of a keyed service
 	}
 }
 ```

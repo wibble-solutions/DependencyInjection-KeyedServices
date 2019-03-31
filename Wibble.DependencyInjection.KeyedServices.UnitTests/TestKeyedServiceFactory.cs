@@ -122,6 +122,7 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
                 u.Services.Setup(s => s.GetService(typeof(MyService2))).Returns(default(MyService2));
 
                 // Act
+                // ReSharper disable once MustUseReturnValue
                 var ex = Assert.Throws<InvalidOperationException>(() => u.Factory.GetRequiredService(typeof(IMyService), "KEY"));
 
                 // Assert

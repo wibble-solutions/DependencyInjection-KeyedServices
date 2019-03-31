@@ -148,5 +148,50 @@ namespace Wibble.DependencyInjection.KeyedServices.UnitTests
             Assert.That(service2, Is.InstanceOf<MyService2>());
         }
 
+        [Test]
+        public void Resolve_Enumerable()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+
+            var registrar = new KeyedServiceRegistrar(serviceCollection);
+            registrar.Services.AddTransient<IMyService, MyService1>(AvailableServices.Service1);
+            registrar.Services.AddTransient<IMyService, MyService2>(AvailableServices.Service2);
+            serviceCollection.AddTransient<MyServiceHostArray>();
+            var services = serviceCollection.BuildServiceProvider();
+
+            // Act
+            var host = services.GetService<MyServiceHostArray>();
+
+            // Assert
+            Assert.That(host.Services, Has.Length.EqualTo(2));
+            Assert.That(host.Services[0], Is.InstanceOf<MyService1>());
+            Assert.That(host.Services[1], Is.InstanceOf<MyService2>());
+        }
+
+        [Test]
+        public void Resolve_Func()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection();
+
+            var registrar = new KeyedServiceRegistrar(serviceCollection);
+            registrar.AddTransient<IMyService, MyService1>(AvailableServices.Service1);
+            registrar.AddTransient<IMyService, MyService2>(AvailableServices.Service2);
+            serviceCollection.AddTransient<MyServiceHostFunc>();
+            serviceCollection.AddTransient<Func<object, IMyService>>(s => s.GetService<IMyService>);
+            var services = serviceCollection.BuildServiceProvider();
+
+            // Act
+            var host = services.GetService<MyServiceHostFunc>();
+            Assert.That(host.Factory, Is.Not.Null);
+            var svc1 = host.Factory(AvailableServices.Service1);
+            var svc2 = host.Factory(AvailableServices.Service2);
+
+            // Assert
+            Assert.That(svc1, Is.InstanceOf<MyService1>());
+            Assert.That(svc2, Is.InstanceOf<MyService2>());
+        }
+
     }
 }
