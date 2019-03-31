@@ -34,7 +34,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         [MustUseReturnValue]
         public static IEnumerable<Type> LookUp<TInterface>(this IKeyedServiceRegister register)
         {
-            return register.LookUp(typeof(TInterface));
+            return register.LookUp(typeof(TInterface)).Distinct();
         }
 
         /// <summary>

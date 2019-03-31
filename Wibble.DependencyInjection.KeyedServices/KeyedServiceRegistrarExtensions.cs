@@ -92,7 +92,7 @@ namespace Wibble.DependencyInjection.KeyedServices
             where TService : class, TInterface
         {
             registrar.Services.AddTransient(implementationFactory);
-            registrar.Services.AddTransient<TInterface, TService>(implementationFactory);
+            registrar.Services.AddTransient<TInterface, TService>(s => s.GetService<TService>());
             registrar.Add<TInterface, TService>(key);
         }
 
@@ -110,7 +110,7 @@ namespace Wibble.DependencyInjection.KeyedServices
             where TService : class, TInterface
         {
             registrar.Services.AddScoped(implementationFactory);
-            registrar.Services.AddScoped<TInterface, TService>(implementationFactory);
+            registrar.Services.AddScoped<TInterface, TService>(s => s.GetService<TService>());
             registrar.Add<TInterface, TService>(key);
         }
 
@@ -126,20 +126,6 @@ namespace Wibble.DependencyInjection.KeyedServices
             where TService : class, TInterface
         {
             registrar.Add(typeof(TInterface), typeof(TService), key);
-        }
-
-        /// <summary>
-        /// Looks up a service via its key
-        /// </summary>
-        /// <typeparam name="TInterface">The type of the interface.</typeparam>
-        /// <param name="register">The register</param>
-        /// <param name="key">The key.</param>
-        /// <returns>The <see cref="Type"/> that implements <see cref="TInterface"/></returns>
-        [PublicAPI]
-        [MustUseReturnValue]
-        public static Type LookUp<TInterface>([NotNull]this IKeyedServiceRegister register, object key)
-        {
-            return register.LookUp(typeof(TInterface), key);
         }
     }
 }
