@@ -19,12 +19,15 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@1
+  displayName: 'Install NuGet tools'
 
 - task: NuGetCommand@2
+  displayName: 'Get source'
   inputs:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
+  displayName: 'Build Solution'
   inputs:
     solution: '$(solution)'
     msbuildArgs: '/p:PackageAsSingleFile=false'
@@ -32,12 +35,14 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: 'Run unit tests'
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
+  displayName: 'Create NuGet package'
   inputs:
-    command: pack
-    packagesToPack: '**/*.csproj'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
+    command: 'custom'
+    custom: 'pack'
+    arguments: '**/*.csproj --no-build --include-symbols --include-source -c=Release -o $(build.artifactstagingdirectory)'
