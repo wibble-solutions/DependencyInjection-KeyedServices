@@ -15,7 +15,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
         /// <param name="key">The key.</param>
-        /// <returns>The <see cref="Type"/> that implements <see cref="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/> that implements <paramref name="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         Type LookUp([NotNull] Type interfaceType, [CanBeNull] object key);
@@ -24,7 +24,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// Looks up all of the types that provide a keyed service
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
-        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/>s that implements <paramref namef="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         IEnumerable<Type> LookUp([NotNull] Type interfaceType);
@@ -33,7 +33,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// Looks up all of the keys related with a keyed service
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
-        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/>s that implements <paramref name="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         IEnumerable<object> GetKeys([NotNull] Type interfaceType);
@@ -43,7 +43,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
         /// <param name="key">The key, or null to determine whether there any are any keyed services registered</param>
-        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/>s that implements <paramref name="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         bool Contains([NotNull] Type interfaceType, object key);
@@ -52,7 +52,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// Determines whether the supplied keyed service exists
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
-        /// <returns>The <see cref="Type"/>s that implements <see cref="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/>s that implements <paramref name="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         bool Contains([NotNull] Type interfaceType);

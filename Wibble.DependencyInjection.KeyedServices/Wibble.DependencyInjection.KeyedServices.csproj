@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/wibble-solutions/DependencyInjection-KeyedServices</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wibble-solutions/DependencyInjection-KeyedServices.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
