@@ -24,7 +24,7 @@ namespace Wibble.DependencyInjection.KeyedServices
         /// Looks up all of the types that provide a keyed service
         /// </summary>
         /// <param name="interfaceType">The interface type</param>
-        /// <returns>The <see cref="Type"/>s that implements <paramref namef="interfaceType"/></returns>
+        /// <returns>The <see cref="Type"/>s that implements <paramref name="interfaceType"/></returns>
         [PublicAPI]
         [MustUseReturnValue]
         IEnumerable<Type> LookUp([NotNull] Type interfaceType);
