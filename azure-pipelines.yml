@@ -43,6 +43,6 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Create NuGet package'
   inputs:
-    command: 'custom'
-    custom: 'pack'
-    arguments: '**/*.csproj --no-build --include-symbols --include-source -c=Release -o $(build.artifactstagingdirectory)'
+    command: 'pack'
+    includesymbols: true
+    outputDir: '$(build.artifactstagingdirectory)'
