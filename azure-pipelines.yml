@@ -46,4 +46,9 @@ steps:
   inputs:
     command: 'pack'
     includesymbols: true
-    outputDir: '$(build.artifactstagingdirectory)'
+    outputDir: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'packages'
